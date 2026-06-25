@@ -60,10 +60,12 @@ function out(){
 			</div>
 
 			<div class="card-body">
-				<form class="row g-3 mb-4" action="/search.do">
+				<form class="row g-3 mb-4" method="post"
+					action="<c:url value='/mainList.do'/>">
 					<div class="col-md-6">
 						<label class="form-label">제목</label> <input type="text"
-							class="form-control" name="searchName">
+							class="form-control" id="searchKeyword" name="searchKeyword"
+							value="${boardVO.searchKeyword}">
 					</div>
 					<div class="col-md-6 d-flex align-items-end">
 						<button type="submit" class="btn btn-secondary">검색</button>
