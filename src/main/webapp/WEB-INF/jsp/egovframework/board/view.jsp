@@ -14,6 +14,13 @@
     function list(){
         location.href = "<c:url value='/mainList.do'/>";
     }
+    function modify(){
+        location.href = "<c:url value='/mgmt.do'/>?idx=${boardVO.idx}";
+    }
+    function del(){
+        if(!confirm("삭제하시겠습니까?")){ return; }
+        location.href = "<c:url value='/mgmt.do'/>?idx=${boardVO.idx}&mode=del";
+    }
     </script>
 </head>
 <body>
@@ -21,39 +28,39 @@
 		<h1>상세화면</h1>
 		<div class="card mb-4">
 			<div class="card-header">
-				<label>상세정보</label>
+				<label>${sessionScope.userName} 님이 로그인 하셨습니다.</label>
 			</div>
 			<div class="card-body">
-				<form class="row g-3" method="post" action="/">
-					<div class="row mb-3">
-						<label class="col-sm-2 col-form-label">게시물아이디:</label>
-						<div class="col-sm-10 d-flex align-items-center">
-							<div>게시물아이디</div>
-						</div>
+				<div class="row mb-3">
+					<label class="col-sm-2 col-form-label">게시물아이디:</label>
+					<div class="col-sm-10 d-flex align-items-center">
+						<div>${boardVO.idx}</div>
 					</div>
-					<div class="row mb-3">
-						<label class="col-sm-2 col-form-label">제목:</label>
-						<div class="col-sm-10 d-flex align-items-center">
-							<div>제목</div>
-						</div>
+				</div>
+				<div class="row mb-3">
+					<label class="col-sm-2 col-form-label">제목:</label>
+					<div class="col-sm-10 d-flex align-items-center">
+						<div>${boardVO.title}</div>
 					</div>
-					<div class="row mb-3">
-						<label class="col-sm-2 col-form-label">등록자/등록일:</label>
-						<div class="col-sm-10 d-flex align-items-center">
-							<div>등록자/등록일</div>
-						</div>
+				</div>
+				<div class="row mb-3">
+					<label class="col-sm-2 col-form-label">등록자/등록일:</label>
+					<div class="col-sm-10 d-flex align-items-center">
+						<div>${boardVO.writer}/ ${boardVO.indate}</div>
 					</div>
-					<div class="row mb-3">
-						<label class="col-sm-2 col-form-label">내용:</label>
-						<div class="col-sm-10 d-flex align-items-center">
-							<div>내용</div>
-						</div>
+				</div>
+				<div class="row mb-3">
+					<label class="col-sm-2 col-form-label">내용:</label>
+					<div class="col-sm-10 d-flex align-items-center">
+						<div>${boardVO.contents}</div>
 					</div>
-				</form>
+				</div>
 			</div>
 			<div class="card-footer text-end">
-				<button type="button" class="btn btn-secondary">수정</button>
-				<button type="button" class="btn btn-danger">삭제</button>
+				<c:if test="${!empty sessionScope.userId}">
+					<button type="button" class="btn btn-secondary" onclick="modify();">수정</button>
+					<button type="button" class="btn btn-danger" onclick="del();">삭제</button>
+				</c:if>
 				<button type="button" class="btn btn-outline-secondary"
 					onclick="list();">목록</button>
 			</div>
