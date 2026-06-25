@@ -2,73 +2,85 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="egovframework.example.sample.board.service.impl.BoardMapper">
+<mapper
+	namespace="egovframework.example.sample.board.service.impl.BoardMapper">
 
-    <resultMap id="board" type="egovframework.example.sample.board.service.BoardVO">
-        <result property="idx" column="idx"/>
-        <result property="title" column="title"/>
-        <result property="contents" column="contents"/>
-        <result property="writer" column="writer"/>
-        <result property="writerNm" column="writerNm"/>
-        <result property="indate" column="indate"/>
-    </resultMap>
+	<resultMap id="board"
+		type="egovframework.example.sample.board.service.BoardVO">
+		<result property="idx" column="idx" />
+		<result property="title" column="title" />
+		<result property="contents" column="contents" />
+		<result property="writer" column="writer" />
+		<result property="writerNm" column="writerNm" />
+		<result property="indate" column="indate" />
+	</resultMap>
 
-    <select id="selectLoginCheck" parameterType="egovframework.example.sample.board.service.BoardVO" resultType="String">
-        SELECT USER_NAME
-        FROM TBL_USER
-        WHERE 1=1
-        AND USER_ID = #{userId}
-        AND PASSWORD = #{password}
-    </select>
-  <!-- 게시글 목록 조회 -->
-<select id="selectBoardList" parameterType="boardVO" resultType="egovMap">
-    SELECT
-        A.IDX as idx
-        , A.TITLE as title
-        , A.COUNT as count
-        , A.WRITER as writer
-        , A.INDATE as indate
-    FROM TBL_BOARD A
-    WHERE 1=1
-    <if test="searchKeyword != null and searchKeyword != ''">
-        AND A.TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
-    </if>
-    ORDER BY A.IDX DESC
-</select>
+	<select id="selectLoginCheck"
+		parameterType="egovframework.example.sample.board.service.BoardVO"
+		resultType="String">
+		SELECT USER_NAME
+		FROM TBL_USER
+		WHERE 1=1
+		AND USER_ID =
+		#{userId}
+		AND PASSWORD = #{password}
+	</select>
+	<!-- 게시글 목록 조회 -->
+	<select id="selectBoardList" parameterType="boardVO"
+		resultType="egovMap">
+		SELECT
+		A.IDX as idx
+		, A.TITLE as title
+		, IFNULL(A.COUNT, 0) as count
+		, A.WRITER as writer
+		, DATE_FORMAT(A.INDATE, '%Y-%m-%d') as indate
+		FROM TBL_BOARD A
+		WHERE 1=1
+		AND A.WRITER IS NOT NULL
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND A.TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+		ORDER BY A.IDX DESC
+	</select>
+	<!-- 게시글 단건 조회 -->
+	<select id="selectBoard" parameterType="boardVO"
+		resultType="egovMap">
+		SELECT
+		A.IDX as idx
+		, A.TITLE as title
+		, A.CONTENTS as
+		contents
+		, A.WRITER as writer
+		, A.INDATE as indate
+		FROM TBL_BOARD A
+		WHERE
+		A.IDX = #{idx}
+	</select>
 
-<!-- 게시글 단건 조회 -->
-<select id="selectBoard" parameterType="boardVO" resultType="egovMap">
-    SELECT
-        A.IDX as idx
-        , A.TITLE as title
-        , A.CONTENTS as contents
-        , A.WRITER as writer
-        , A.INDATE as indate
-    FROM TBL_BOARD A
-    WHERE A.IDX = #{idx}
-</select>
+	<!-- 게시글 등록 -->
+	<insert id="insertBoard" parameterType="boardVO">
+		INSERT INTO TBL_BOARD
+		(
+		IDX, TITLE, CONTENTS, WRITER, INDATE )
+		VALUES
+		( NULL, #{title},
+		#{contents}, #{writer}, NOW() )
+	</insert>
 
-<!-- 게시글 등록 -->
-<insert id="insertBoard" parameterType="boardVO">
-    INSERT INTO TBL_BOARD
-    ( IDX, TITLE, CONTENTS, WRITER, INDATE )
-    VALUES
-    ( NULL, #{title}, #{contents}, #{writer}, NOW() )
-</insert>
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="boardVO">
+		UPDATE TBL_BOARD
+		SET TITLE
+		= #{title}
+		, CONTENTS = #{contents}
+		WHERE IDX = #{idx}
+	</update>
 
-<!-- 게시글 수정 -->
-<update id="updateBoard" parameterType="boardVO">
-    UPDATE TBL_BOARD
-    SET TITLE = #{title}
-        , CONTENTS = #{contents}
-    WHERE IDX = #{idx}
-</update>
-
-<!-- 게시글 삭제 -->
-<delete id="deleteBoard" parameterType="boardVO">
-    DELETE FROM TBL_BOARD
-    WHERE IDX = #{idx}
-</delete>
+	<!-- 게시글 삭제 -->
+	<delete id="deleteBoard" parameterType="boardVO">
+		DELETE FROM TBL_BOARD
+		WHERE IDX = #{idx}
+	</delete>
 
 
 </mapper>

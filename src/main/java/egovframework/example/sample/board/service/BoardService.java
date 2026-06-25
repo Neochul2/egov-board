@@ -8,7 +8,7 @@ public interface BoardService {
 
     List<?> selectBoardList(BoardVO vo) throws Exception;
 
-    BoardVO selectBoard(BoardVO vo) throws Exception;
+    Object selectBoard(BoardVO vo) throws Exception;
 
     void insertBoard(BoardVO vo) throws Exception;
 

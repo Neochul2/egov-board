@@ -34,10 +34,10 @@ public class BoardController {
 
 	// 등록/수정 처리 (POST)
 	@RequestMapping(value = "/mgmt.do", method = RequestMethod.POST)
-	public String mgmt2(@ModelAttribute("boardVO") BoardVO boardVO, @RequestParam("mode") String mode, ModelMap model)
-			throws Exception {
+	public String mgmt2(@ModelAttribute("boardVO") BoardVO boardVO, @RequestParam("mode") String mode, ModelMap model,
+			HttpServletRequest request) throws Exception {
 		if ("add".equals(mode)) {
-			boardVO.setWriter(boardVO.getUserId());
+			boardVO.setWriter((String) request.getSession().getAttribute("userName"));
 			boardService.insertBoard(boardVO);
 		} else if ("edit".equals(mode)) {
 			boardService.updateBoard(boardVO);
@@ -50,8 +50,8 @@ public class BoardController {
 	// 상세 화면
 	@RequestMapping(value = "/view.do")
 	public String view(@ModelAttribute("boardVO") BoardVO boardVO, ModelMap model) throws Exception {
-		boardVO = boardService.selectBoard(boardVO);
-		model.addAttribute("boardVO", boardVO);
+		Object result = boardService.selectBoard(boardVO);
+		model.addAttribute("boardVO", result);
 		return "board/view";
 	}
 
