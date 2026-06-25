@@ -33,7 +33,7 @@
         <div class="card-body">
             <form name="form1" method="post" action="<c:url value='/mgmt.do'/>">
                 <input type="hidden" name="mode" value="">
-                <input type="hidden" name="idx" value="${boardVO.idx}">
+              
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label">게시물아이디:</label>
                     <div class="col-sm-10">
