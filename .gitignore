@@ -1,0 +1,17 @@
+# Eclipse 설정파일
+.classpath
+.project
+.settings/
+.factorypath
+
+# 빌드 결과물
+target/
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 라이브러리 (로컬에서 직접 설치)
+src/main/webapp/css/bootstrap/
+src/main/webapp/js/jquery.min.js
+src/main/webapp/images/egovframework/
