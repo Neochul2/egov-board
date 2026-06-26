@@ -34,7 +34,8 @@
 		, IFNULL(A.COUNT, 0) as count                            <!-- 조회수 NULL이면 0 -->
 		, A.WRITER as writer                                      <!-- 작성자 -->
 		, DATE_FORMAT(A.INDATE, '%Y-%m-%d') as indate            <!-- 날짜 포맷 변환 -->
-		, (SELECT COUNT(*) FROM TBL_REPLY B WHERE B.IDX = A.IDX) as replyCnt  <!-- 댓글수 -->
+		, (SELECT COUNT(*) FROM TBL_REPLY B WHERE B.IDX = A.IDX) as replyCnt  <!-- 
+			댓글수 -->
 		FROM TBL_BOARD A
 		WHERE 1=1                                                     <!-- 항상 참 조건 -->
 		AND A.WRITER IS NOT NULL                                      <!-- 테스트 데이터 제외 -->
@@ -122,6 +123,12 @@
 		= IFNULL(COUNT, 0) + 1
 		WHERE IDX = #{idx}
 	</update>
+
+	<!-- 게시글 삭제 시 댓글 전체 삭제 (제약조건) -->
+	<delete id="deleteReplyByIdx" parameterType="boardVO">
+		DELETE FROM TBL_REPLY  <!-- 댓글 테이블에서 -->
+		WHERE IDX = #{idx}     <!-- 해당 게시글의 모든 댓글 삭제 -->
+	</delete>
 
 
 

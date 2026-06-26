@@ -41,12 +41,20 @@ public class BoardController {
 	public String mgmt2(@ModelAttribute("boardVO") BoardVO boardVO, @RequestParam("mode") String mode, ModelMap model,
 			HttpServletRequest request) throws Exception {
 		if ("add".equals(mode)) {
-			boardVO.setWriter((String) request.getSession().getAttribute("userName"));
-			boardService.insertBoard(boardVO);
+			boardVO.setWriter((String) request.getSession().getAttribute("userName")); // 세션에서 작성자 가져오기
+			boardService.insertBoard(boardVO); // 게시글 등록
 		} else if ("edit".equals(mode)) {
-			boardService.updateBoard(boardVO);
+			boardService.updateBoard(boardVO); // 게시글 수정
 		} else if ("del".equals(mode)) {
-			boardService.deleteBoard(boardVO);
+			List<?> replyList = boardService.selectReplyList(boardVO); // 댓글 수 확인
+			if (replyList != null && replyList.size() > 0) {
+				// 댓글 있으면 삭제 불가
+				model.addAttribute("msg", "댓글이 있어 삭제할 수 없습니다.");
+				model.addAttribute("boardVO", boardService.selectBoard(boardVO));
+				model.addAttribute("replyList", replyList);
+				return "board/view";
+			}
+			boardService.deleteBoard(boardVO); // 댓글 없으면 게시글 삭제
 		}
 		return "redirect:mainList.do";
 	}
@@ -54,7 +62,7 @@ public class BoardController {
 	// 상세 화면
 	@RequestMapping(value = "/view.do")
 	public String view(@ModelAttribute("boardVO") BoardVO boardVO, ModelMap model) throws Exception {
-		boardService.updateCount(boardVO);  // 조회수 1 증가
+		boardService.updateCount(boardVO); // 조회수 1 증가
 		Object result = boardService.selectBoard(boardVO);
 		List<?> replyList = boardService.selectReplyList(boardVO);
 		model.addAttribute("boardVO", result);

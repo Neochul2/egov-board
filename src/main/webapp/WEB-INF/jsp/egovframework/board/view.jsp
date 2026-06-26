@@ -11,6 +11,11 @@
 <script src="/board/js/jquery.min.js"></script>
 <script src="/board/css/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    <c:if test="${!empty msg}">
+        alert("${msg}"); // 댓글 있어서 삭제 못한다는 메시지 표시
+    </c:if>
+});
 function list(){
     location.href = "<c:url value='/mainList.do'/>";
 }
