@@ -52,4 +52,10 @@ public class BoardServiceImpl implements BoardService {
 	public void deleteReply(BoardVO vo) throws Exception {
 	    boardDAO.deleteReply(vo);
 	}
+	
+	public void updateCount(BoardVO vo) throws Exception {
+	    boardDAO.updateCount(vo);
+	}
+	
+	
 }

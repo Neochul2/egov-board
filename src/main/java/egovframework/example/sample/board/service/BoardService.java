@@ -22,5 +22,8 @@ public interface BoardService {
 	List<?> selectReplyList(BoardVO vo) throws Exception;
 
 	void deleteReply(BoardVO vo) throws Exception;
+	
+	void updateCount(BoardVO vo) throws Exception;
+	
 
 }

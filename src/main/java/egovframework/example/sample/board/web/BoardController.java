@@ -54,6 +54,7 @@ public class BoardController {
 	// 상세 화면
 	@RequestMapping(value = "/view.do")
 	public String view(@ModelAttribute("boardVO") BoardVO boardVO, ModelMap model) throws Exception {
+		boardService.updateCount(boardVO);  // 조회수 1 증가
 		Object result = boardService.selectBoard(boardVO);
 		List<?> replyList = boardService.selectReplyList(boardVO);
 		model.addAttribute("boardVO", result);

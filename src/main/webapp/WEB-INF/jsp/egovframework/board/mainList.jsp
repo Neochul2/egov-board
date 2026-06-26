@@ -77,6 +77,7 @@ function out(){
 							<th>게시물번호</th>
 							<th>제목</th>
 							<th>조회수</th>
+							<th>댓글수</th> <!-- 댓글수 컬럼 추가 -->
 							<th>등록자</th>
 							<th>등록일</th>
 						</tr>
@@ -87,6 +88,7 @@ function out(){
 								<td><a href="javascript:view('${result.idx}');">${result.idx}</a></td>
 								<td><a href="javascript:view('${result.idx}');">${result.title}</a></td>
 								<td>${result.count}</td>
+								<td>${result['replyCnt']}</td>  <!-- 댓글수 출력 -->
 								<td>${result.writer}</td>
 								<td>${result.indate}</td>
 							</tr>
