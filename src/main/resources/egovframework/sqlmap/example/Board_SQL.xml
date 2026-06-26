@@ -2,23 +2,137 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="egovframework.example.sample.board.service.impl.BoardMapper">
+<mapper
+	namespace="egovframework.example.sample.board.service.impl.BoardMapper">
 
-    <resultMap id="board" type="egovframework.example.sample.board.service.BoardVO">
-        <result property="idx" column="idx"/>
-        <result property="title" column="title"/>
-        <result property="contents" column="contents"/>
-        <result property="writer" column="writer"/>
-        <result property="writerNm" column="writerNm"/>
-        <result property="indate" column="indate"/>
-    </resultMap>
+	<resultMap id="board"
+		type="egovframework.example.sample.board.service.BoardVO">
+		<result property="idx" column="idx" />
+		<result property="title" column="title" />
+		<result property="contents" column="contents" />
+		<result property="writer" column="writer" />
+		<result property="writerNm" column="writerNm" />
+		<result property="indate" column="indate" />
+	</resultMap>
 
-    <select id="selectLoginCheck" parameterType="egovframework.example.sample.board.service.BoardVO" resultType="String">
-        SELECT USER_NAME
-        FROM TBL_USER
-        WHERE 1=1
-        AND USER_ID = #{userId}
-        AND PASSWORD = #{password}
-    </select>
+	<!-- 로그인 체크 -->
+	<select id="selectLoginCheck"
+		parameterType="egovframework.example.sample.board.service.BoardVO"
+		resultType="String">
+		SELECT USER_NAME
+		FROM TBL_USER
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		AND PASSWORD = #{password}
+	</select>
+
+	<!-- 게시글 목록 조회 (페이징 포함) -->
+	<select id="selectBoardList" parameterType="boardVO"
+		resultType="egovMap">
+		SELECT
+		A.IDX as idx                <!-- 게시글 번호 -->
+		, A.TITLE as title          <!-- 제목 -->
+		, IFNULL(A.COUNT, 0) as count  <!-- 조회수 NULL이면 0 -->
+		, A.WRITER as writer        <!-- 작성자 -->
+		, DATE_FORMAT(A.INDATE, '%Y-%m-%d') as indate  <!-- 날짜 포맷 변환 -->
+		, (SELECT COUNT(*) FROM TBL_REPLY B WHERE B.IDX = A.IDX) as replyCnt  <!-- 
+			댓글수 -->
+		FROM TBL_BOARD A
+		WHERE 1=1                       <!-- 항상 참 조건 -->
+		AND A.WRITER IS NOT NULL        <!-- 테스트 데이터 제외 -->
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND A.TITLE LIKE CONCAT('%', #{searchKeyword}, '%')  <!-- 검색어 있을 때만 -->
+		</if>
+		ORDER BY A.IDX DESC             <!-- 최신순 정렬 -->
+		LIMIT #{firstIndex}, #{recordCountPerPage}  <!-- 페이징: 시작위치부터 N개 -->
+	</select>
+
+	<!-- 전체 게시글 수 조회 (페이징 계산용) -->
+	<select id="selectBoardListTotCnt" parameterType="boardVO"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_BOARD A
+		WHERE 1=1
+		AND A.WRITER IS NOT NULL
+		<if test="searchKeyword != null and searchKeyword != ''">
+			AND A.TITLE LIKE CONCAT('%', #{searchKeyword}, '%')
+		</if>
+	</select>
+
+	<!-- 게시글 단건 조회 -->
+	<select id="selectBoard" parameterType="boardVO"
+		resultType="egovMap">
+		SELECT
+		A.IDX as idx
+		, A.TITLE as title
+		, A.CONTENTS as contents
+		, A.WRITER as writer
+		, A.INDATE as indate
+		FROM TBL_BOARD A
+		WHERE A.IDX = #{idx}
+	</select>
+
+	<!-- 게시글 등록 -->
+	<insert id="insertBoard" parameterType="boardVO">
+		INSERT INTO TBL_BOARD
+		( IDX, TITLE, CONTENTS, WRITER, INDATE )
+		VALUES
+		( NULL, #{title}, #{contents}, #{writer}, NOW() )
+	</insert>
+
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="boardVO">
+		UPDATE TBL_BOARD
+		SET TITLE = #{title}
+		, CONTENTS = #{contents}
+		WHERE IDX = #{idx}
+	</update>
+
+	<!-- 게시글 삭제 -->
+	<delete id="deleteBoard" parameterType="boardVO">
+		DELETE FROM TBL_BOARD
+		WHERE IDX = #{idx}
+	</delete>
+
+	<!-- 게시글 삭제 시 댓글 전체 삭제 (제약조건) -->
+	<delete id="deleteReplyByIdx" parameterType="boardVO">
+		DELETE FROM TBL_REPLY   <!-- 댓글 테이블에서 -->
+		WHERE IDX = #{idx}      <!-- 해당 게시글의 모든 댓글 삭제 -->
+	</delete>
+
+	<!-- 댓글 등록 -->
+	<insert id="insertReply" parameterType="boardVO">
+		INSERT INTO TBL_REPLY
+		( IDX, REPLY, WRITER, INDATE )
+		VALUES
+		( #{idx}, #{reply}, #{writer}, NOW() )
+	</insert>
+
+	<!-- 댓글 목록 조회 -->
+	<select id="selectReplyList" parameterType="boardVO"
+		resultType="egovMap">
+		SELECT
+		A.SEQ as seq
+		, A.IDX as idx
+		, A.REPLY as reply
+		, A.WRITER as writer
+		, DATE_FORMAT(A.INDATE, '%Y-%m-%d') as indate
+		FROM TBL_REPLY A
+		WHERE A.IDX = #{idx}
+		ORDER BY A.SEQ ASC
+	</select>
+
+	<!-- 댓글 단건 삭제 -->
+	<delete id="deleteReply" parameterType="boardVO">
+		DELETE FROM TBL_REPLY
+		WHERE SEQ = #{seq}
+	</delete>
+
+	<!-- 조회수 증가 -->
+	<update id="updateCount" parameterType="boardVO">
+		UPDATE TBL_BOARD
+		SET COUNT = IFNULL(COUNT, 0) + 1
+		WHERE IDX = #{idx}
+	</update>
 
 </mapper>
