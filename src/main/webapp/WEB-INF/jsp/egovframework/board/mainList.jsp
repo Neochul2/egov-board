@@ -77,7 +77,8 @@ function out(){
 							<th>게시물번호</th>
 							<th>제목</th>
 							<th>조회수</th>
-							<th>댓글수</th> <!-- 댓글수 컬럼 추가 -->
+							<th>댓글수</th>
+							<!-- 댓글수 컬럼 추가 -->
 							<th>등록자</th>
 							<th>등록일</th>
 						</tr>
@@ -88,7 +89,8 @@ function out(){
 								<td><a href="javascript:view('${result.idx}');">${result.idx}</a></td>
 								<td><a href="javascript:view('${result.idx}');">${result.title}</a></td>
 								<td>${result.count}</td>
-								<td>${result['replyCnt']}</td>  <!-- 댓글수 출력 -->
+								<td>${result['replyCnt']}</td>
+								<!-- 댓글수 출력 -->
 								<td>${result.writer}</td>
 								<td>${result.indate}</td>
 							</tr>
@@ -97,11 +99,34 @@ function out(){
 				</table>
 			</div>
 
-			<div class="card-footer text-end">
-				<c:if test="${!empty sessionScope.userId}">
-					<button type="button" class="btn btn-outline-secondary"
-						onclick="add();">등록</button>
-				</c:if>
+			<div class="card-footer">
+				<div class="d-flex justify-content-between align-items-center">
+					<nav>
+						<ul class="pagination mb-0">
+							<c:if test="${boardVO.currentPageNo > 1}">
+								<li class="page-item"><a class="page-link"
+									href="<c:url value='/mainList.do'/>?currentPageNo=${boardVO.currentPageNo - 1}&searchKeyword=${boardVO.searchKeyword}">이전</a>
+								</li>
+							</c:if>
+							<c:forEach begin="1" end="${totalPageCount}" var="pageNo">
+								<li
+									class="page-item ${boardVO.currentPageNo == pageNo ? 'active' : ''}">
+									<a class="page-link"
+									href="<c:url value='/mainList.do'/>?currentPageNo=${pageNo}&searchKeyword=${boardVO.searchKeyword}">${pageNo}</a>
+								</li>
+							</c:forEach>
+							<c:if test="${boardVO.currentPageNo < totalPageCount}">
+								<li class="page-item"><a class="page-link"
+									href="<c:url value='/mainList.do'/>?currentPageNo=${boardVO.currentPageNo + 1}&searchKeyword=${boardVO.searchKeyword}">다음</a>
+								</li>
+							</c:if>
+						</ul>
+					</nav>
+					<c:if test="${!empty sessionScope.userId}">
+						<button type="button" class="btn btn-outline-secondary"
+							onclick="add();">등록</button>
+					</c:if>
+				</div>
 			</div>
 
 		</div>

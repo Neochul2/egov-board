@@ -22,4 +22,6 @@ public interface BoardMapper {
     void deleteReply(BoardVO vo) throws Exception;              // 댓글 단건 삭제
 
     void updateCount(BoardVO vo) throws Exception;              // 조회수 증가
+    
+    int selectBoardListTotCnt(BoardVO vo) throws Exception; // 전체 게시글 수 조회 (페이징 계산용)
 }

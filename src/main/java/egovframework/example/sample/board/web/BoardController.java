@@ -21,8 +21,30 @@ public class BoardController {
 	// 메인 목록
 	@RequestMapping(value = "/mainList.do")
 	public String list(@ModelAttribute("boardVO") BoardVO boardVO, ModelMap model) throws Exception {
+
+		// 한 페이지에 보여줄 게시글 수 설정
+		boardVO.setRecordCountPerPage(10);
+
+		// 현재 페이지 번호 (없으면 1페이지)
+		if (boardVO.getCurrentPageNo() == 0) {
+			boardVO.setCurrentPageNo(1);
+		}
+		// 조회 시작 위치 계산 (0부터 시작)
+		// 예: 1페이지 → 0, 2페이지 → 10, 3페이지 → 20
+		boardVO.setFirstIndex((boardVO.getCurrentPageNo() - 1) * boardVO.getRecordCountPerPage());
+
+		// 전체 게시글 수 조회
+		int totCnt = boardService.selectBoardListTotCnt(boardVO);
+		boardVO.setTotalRecordCount(totCnt);
+
+		// 전체 페이지 수 계산
+		// 예: 25개 / 10 = 2.5 → 올림 → 3페이지
+		int totalPageCount = (int) Math.ceil((double) totCnt / boardVO.getRecordCountPerPage());
+
 		List<?> list = boardService.selectBoardList(boardVO);
 		model.addAttribute("resultList", list);
+		model.addAttribute("boardVO", boardVO);
+		model.addAttribute("totalPageCount", totalPageCount); // 전체 페이지 수
 		return "board/mainList";
 	}
 
