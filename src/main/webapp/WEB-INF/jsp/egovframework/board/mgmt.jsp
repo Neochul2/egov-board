@@ -38,14 +38,14 @@
                     <label class="col-sm-2 col-form-label">게시물아이디:</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="idx" name="idx" 
-                               value="${boardVO.idx}" placeholder="자동발번" readonly>
+                               value="${boardVO['idx']}" placeholder="자동발번" readonly>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label">제목:</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="title" name="title" 
-                               value="${boardVO.title}" placeholder="제목을 입력하세요" maxlength="100">
+                               value="${boardVO['title']}"placeholder="제목을 입력하세요" maxlength="100">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -56,14 +56,14 @@
                     </div>
                     <div class="col-sm-5">
                         <input type="text" class="form-control" id="indate" name="indate" 
-                               value="${boardVO.indate}" placeholder="등록일" maxlength="10">
+                               value="${boardVO['indate']}" placeholder="등록일" maxlength="10">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <label class="col-sm-2 col-form-label">내용:</label>
                     <div class="col-sm-10">
                         <textarea class="form-control" rows="5" id="contents" name="contents" 
-                                  maxlength="1000">${boardVO.contents}</textarea>
+                                  maxlength="1000">${boardVO['contents']}</textarea>
                     </div>
                 </div>
             </form>

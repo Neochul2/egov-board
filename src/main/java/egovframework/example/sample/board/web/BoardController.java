@@ -29,6 +29,10 @@ public class BoardController {
 	// 등록/수정 화면 호출 (GET)
 	@RequestMapping(value = "/mgmt.do", method = RequestMethod.GET)
 	public String mgmt(@ModelAttribute("boardVO") BoardVO boardVO, ModelMap model) throws Exception {
+		if (boardVO.getIdx() != null && !"".equals(boardVO.getIdx())) {
+			Object result = boardService.selectBoard(boardVO);
+			model.addAttribute("boardVO", result);
+		}
 		return "board/mgmt";
 	}
 
