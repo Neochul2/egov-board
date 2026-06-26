@@ -55,7 +55,9 @@ public class BoardController {
 	@RequestMapping(value = "/view.do")
 	public String view(@ModelAttribute("boardVO") BoardVO boardVO, ModelMap model) throws Exception {
 		Object result = boardService.selectBoard(boardVO);
+		List<?> replyList = boardService.selectReplyList(boardVO);
 		model.addAttribute("boardVO", result);
+		model.addAttribute("replyList", replyList);
 		return "board/view";
 	}
 
@@ -87,4 +89,20 @@ public class BoardController {
 		request.getSession().invalidate();
 		return "redirect:mainList.do";
 	}
+
+	// 댓글 등록
+	@RequestMapping(value = "/insertReply.do")
+	public String insertReply(@ModelAttribute("boardVO") BoardVO boardVO, HttpServletRequest request) throws Exception {
+		boardVO.setWriter((String) request.getSession().getAttribute("userName"));
+		boardService.insertReply(boardVO);
+		return "redirect:view.do?idx=" + boardVO.getIdx();
+	}
+
+	// 댓글 삭제
+	@RequestMapping(value = "/deleteReply.do")
+	public String deleteReply(@ModelAttribute("boardVO") BoardVO boardVO) throws Exception {
+		boardService.deleteReply(boardVO);
+		return "redirect:view.do?idx=" + boardVO.getIdx();
+	}
+
 }

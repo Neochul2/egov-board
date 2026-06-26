@@ -13,5 +13,13 @@ public interface BoardMapper {
     void insertBoard(BoardVO vo) throws Exception;
     void updateBoard(BoardVO vo) throws Exception;
     void deleteBoard(BoardVO vo) throws Exception;
+    
+    
+    void insertReply(BoardVO vo) throws Exception;
+    List<?> selectReplyList(BoardVO vo) throws Exception;
+    void deleteReply(BoardVO vo) throws Exception;
+    
+    
+    
 
 }

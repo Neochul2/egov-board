@@ -41,4 +41,15 @@ public class BoardServiceImpl implements BoardService {
 	public void deleteBoard(BoardVO vo) throws Exception {
 		boardDAO.deleteBoard(vo);
 	}
+	
+	
+	public void insertReply(BoardVO vo) throws Exception {
+	    boardDAO.insertReply(vo);
+	}
+	public List<?> selectReplyList(BoardVO vo) throws Exception {
+	    return boardDAO.selectReplyList(vo);
+	}
+	public void deleteReply(BoardVO vo) throws Exception {
+	    boardDAO.deleteReply(vo);
+	}
 }

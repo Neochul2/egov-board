@@ -32,9 +32,11 @@
 		A.IDX as idx
 		, A.TITLE as title
 		, IFNULL(A.COUNT, 0) as count
-		, A.WRITER as writer
+		,
+		A.WRITER as writer
 		, DATE_FORMAT(A.INDATE, '%Y-%m-%d') as indate
-		FROM TBL_BOARD A
+		FROM
+		TBL_BOARD A
 		WHERE 1=1
 		AND A.WRITER IS NOT NULL
 		<if test="searchKeyword != null and searchKeyword != ''">
@@ -82,5 +84,35 @@
 		WHERE IDX = #{idx}
 	</delete>
 
+	<!-- 댓글 등록 -->
+	<insert id="insertReply" parameterType="boardVO">
+		INSERT INTO TBL_REPLY
+		(
+		IDX, REPLY, WRITER, INDATE )
+		VALUES
+		( #{idx}, #{reply}, #{writer}, NOW()
+		)
+	</insert>
 
+	<!-- 댓글 목록 조회 -->
+	<select id="selectReplyList" parameterType="boardVO"
+		resultType="egovMap">
+		SELECT
+		A.SEQ as seq
+		, A.IDX as idx
+		, A.REPLY as reply
+		,
+		A.WRITER as writer
+		, DATE_FORMAT(A.INDATE, '%Y-%m-%d') as indate
+		FROM
+		TBL_REPLY A
+		WHERE A.IDX = #{idx}
+		ORDER BY A.SEQ ASC
+	</select>
+
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="boardVO">
+		DELETE FROM TBL_REPLY
+		WHERE SEQ = #{seq}
+	</delete>
 </mapper>
